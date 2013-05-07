@@ -325,7 +325,7 @@ class BaseDatabaseCreation(object):
             ";",
         ]
 
-    def create_test_db(self, verbosity=1, autoclobber=False, serialize=True, keepdb=False):
+    def create_test_db(self, verbosity=1, autoclobber=False, serialize=True, keepdb=False, schema=None):
         """
         Creates a test database, prompting the user for confirmation if the
         database already exists. Returns the name of the test database created.
@@ -356,6 +356,11 @@ class BaseDatabaseCreation(object):
         self.connection.close()
         settings.DATABASES[self.connection.alias]["NAME"] = test_database_name
         self.connection.settings_dict["NAME"] = test_database_name
+
+        if schema and self.connection.settings_dict['ENGINE'] == 'django.db.backends.postgresql_psycopg2':
+            cur = self.connection.cursor()
+            cur.execute("CREATE SCHEMA %s" % schema)
+            cur.close()
 
         # We report migrate messages at one level lower than that requested.
         # This ensures we don't get flooded with messages during testing
