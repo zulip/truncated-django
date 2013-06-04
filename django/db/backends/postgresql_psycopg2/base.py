@@ -138,7 +138,8 @@ class DatabaseWrapper(BaseDatabaseWrapper):
     def __init__(self, *args, **kwargs):
         super(DatabaseWrapper, self).__init__(*args, **kwargs)
 
-        if self.settings_dict.get('SCHEMA'):
+        if self.settings_dict.get('SCHEMA') and ("-c search_path="+self.settings_dict.get('SCHEMA').strip()) \
+                not in self.settings_dict["OPTIONS"].get("options", ""):
             self.settings_dict["OPTIONS"]["options"] = self.settings_dict["OPTIONS"].get("options", "") \
                 + " -c search_path=" \
                 + self.settings_dict.get('SCHEMA').strip()
