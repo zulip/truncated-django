@@ -462,9 +462,10 @@ class BaseDatabaseCreation(object):
                 sys.stderr.write(
                     "Got an error creating the test database: %s\n" % e)
                 if not autoclobber:
-                    confirm = input(
-                        "Type 'yes' if you would like to try deleting the test "
+                    sys.stdout.write("Type 'yes' if you would like to try deleting the test " \
                         "database '%s', or 'no' to cancel: " % test_database_name)
+                    sys.stdout.flush()
+                    confirm = input("")
                 if autoclobber or confirm == 'yes':
                     try:
                         if verbosity >= 1:
