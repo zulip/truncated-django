@@ -364,12 +364,16 @@ def setup_databases(verbosity, interactive, keepdb=False, debug_sql=False, **kwa
         for alias in aliases:
             connection = connections[alias]
             if test_db_name is None:
+                if signature.count("django.db.backends.dummy"):
+                    schema_args = {}
+                else:
+                    schema_args = {'schema': schema}
                 test_db_name = connection.creation.create_test_db(
                     verbosity,
                     autoclobber=not interactive,
                     keepdb=keepdb,
                     serialize=connection.settings_dict.get("TEST", {}).get("SERIALIZE", True),
-                    schema=schema,
+                    **schema_args
                 )
                 destroy = True
             else:
